@@ -1,2 +1,2 @@
 # Algorithm-Journey
-用来记录日常刷题
+鐢ㄦ潵璁板綍鏃ュ父鍒烽
