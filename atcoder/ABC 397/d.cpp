@@ -17,41 +17,120 @@ ll n, x, y;
 // y = (-3a +- sqrt(9a^2 - 12(a^2 - b))) / 6
 // y = (-3a + sqrt(12b - 3q^2)) / 6
 
-bool isSquare(ll x) {
-    ll y = sqrt(x);
-    return y * y == x;
+ll F(ll x, ll y) {
+    return x * x + x * y + y * y;
 }
 
-bool solve() {
-    for (ll a = 1; a * a <= n; a++) {
-        if (n % a != 0) continue;
-        ll b = n / a;
-        ll delta = 12 * b - 3 * a * a;
-        if (delta <= 0) continue;
-        if (isSquare(delta)) {
-            ll sqrtDelta = sqrt(delta);
-            y = (-3 * a + sqrtDelta);
-            if (y % 6 == 0) {
-                y /= 6;
-                if (y <= 0) continue;
-                x = a + y;
-                return true;
-            }
+ll bs(ll a, ll b) {
+    ll l = 1, r = sqrt(b);
+    while (l <= r) {
+        ll y = (l + r) / 2;
+        ll x = a + y;
+        ll new_b = F(x, y);
+        if (new_b == b) {
+            return y;
+        } else if (new_b < b) {
+            l = y + 1;
+        } else {
+            r = y - 1;
         }
     }
-    return false;
+    return -1;
+}
+
+ll bs2(ll a, ll b) {
+    ll l = 1, r = sqrt(b) + 1;
+    while (l < r) {
+        ll y = (l + r) / 2;
+        ll x = a + y;
+        ll new_b = F(x, y);
+        if (new_b == b) {
+            return y;
+        } else if (new_b < b) {
+            l = y + 1;
+        } else {
+            r = y;
+        }
+    }
+    return -1;
+}
+
+ll bs3(ll a, ll b) {
+    ll l = 1, r = sqrt(b) + 1;
+    while (l < r) {
+        ll y = (l + r + 1) / 2;
+        ll x = a + y;
+        ll new_b = F(x, y);
+        if (new_b == b) {
+            return y;
+        } else if (new_b < b) {
+            l = y;
+        } else {
+            r = y - 1;
+        }
+    }
+    return -1;
+}
+
+ll bs_right(ll a, ll b) {
+    ll l = 1, r = sqrt(b);
+    while (l < r) { // ????? l < r
+        ll mid = (l + r + 1) / 2; // ????
+        ll x = a + mid;
+        ll new_b = F(x, mid);
+        if (new_b <= b) { // ???????????????
+            l = mid;
+        } else {
+            r = mid - 1;
+        }
+    }
+    return (F(a + l, l) == b) ? l : -1; // ????????????
+}
+
+ll bs_left(ll a, ll b) {
+    ll l = 1, r = sqrt(b);
+    while (l < r) { // ????? l < r
+        ll mid = (l + r) / 2; // ????
+        ll x = a + mid;
+        ll new_b = F(x, mid);
+        if (new_b >= b) { // ???????????????
+            r = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+    return (F(a + l, l) == b) ? l : -1; // ????????????
+}
+
+ll bs_middle(ll a, ll b) {
+    ll l = 1, r = sqrt(b) + 1;
+    while (l <= r) { // ????? l <= r
+        ll mid = (l + r) / 2; // ????
+        ll x = a + mid;
+        ll new_b = F(x, mid);
+        if (new_b == b) { // ??????
+            return mid;
+        } else if (new_b < b) {
+            l = mid + 1; // ?????
+        } else {
+            r = mid - 1; // ?????
+        }
+    }
+    return -1; // ??????
 }
 
 int main() {
-    // ios::sync_with_stdio(false);
-    // cin.tie(0);
-
-    // Your code here
     cin >> n;
-    if (solve()) {
-        cout << x << " " << y << endl;
-    } else {
-        cout << -1 << endl;
+    for (ll a = 1; a * a * a <= n; a++) {
+        if (n % a != 0) continue;
+        ll b = n / a;
+        
+        ll y = bs_right(a, b);
+        if (y != -1) {
+            cout << y + a << " " << y << endl;
+            return 0;
+        }
     }
+    cout << -1 << endl;
     return 0;
 }
