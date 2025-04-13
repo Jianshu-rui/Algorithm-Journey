@@ -2,3 +2,6 @@
 # 忽略所有 .cph 文件夹
 .cph/
 **/.cph/
+
+# 忽略.vscode文件夹
+.vscode/
